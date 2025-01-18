@@ -10,6 +10,9 @@ import json
 import argparse
 import numpy as np
 import mido
+from collections import defaultdict, Counter
+import csv
+
 
 def get_mtg_tags(embeddings,tag_model,tag_json,max_num_tags=5,tag_threshold=0.01):
 
@@ -32,7 +35,7 @@ def get_mtg_tags(embeddings,tag_model,tag_json,max_num_tags=5,tag_threshold=0.01
     return tags, confidence_score
 
 def process_midi(file):
-    fs = FluidSynth('/666/midiproject/usr/share/soundfonts/FluidR3_GM.sf2',sample_rate=16000)
+    fs = FluidSynth('sf2/FluidR3_GM/FluidR3_GM.sf2',sample_rate=16000)
     #check for duration, do not synthesize files over 15 mins long...
     try:
         mid = mido.MidiFile(file)
@@ -351,7 +354,7 @@ def main():
                     else:
                         tempo_marks=np.array((80, 120, 160))
                         tempo_caps=['Slow', 'Moderate tempo', 'Fast', 'Very fast']
-                        index=np.int(np.sum(bpm>tempo_marks))
+                        index=int(np.sum(bpm>tempo_marks))
                         tempo_cap=tempo_caps[index]
                 #duration
                     try:
@@ -362,7 +365,7 @@ def main():
                 dur_marks=np.array((30, 120, 300))
                 dur_caps=['Short fragment', 'Short song', 'Song', 'Long piece']
                 dur=int(np.round(duration))
-                index=np.int(np.sum(dur>dur_marks))
+                index=int(np.sum(dur>dur_marks))
                 dur_cap=dur_caps[index]
                 #sort nicely
                 new_row={}
